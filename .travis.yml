@@ -13,16 +13,16 @@ before_install:
   - wget -q -O ~/codacy-coverage-reporter-assembly.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
 
 install:
-    mvn --settings .settings.xml install -DskipTests=true -B -V
+    ./mvnw --settings .settings.xml install -DskipTests=true -B -V
 
 script:
-    mvn clean deploy --settings .settings.xml -B -U -Prelease
+    ./mvnw clean deploy --settings .settings.xml -B -U -Prelease
 
 after_success:
   - java -jar ~/codacy-coverage-reporter-assembly.jar report -l Java -r target/site/jacoco/jacoco.xml
 
 before_deploy:
-  - export project_version=$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
+  - export project_version=$(./mvnw help:evaluate -N -Dexpression=project.version|grep -v '\[')
 
 deploy:
   api_key:
