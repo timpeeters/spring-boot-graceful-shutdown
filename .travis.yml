@@ -19,7 +19,7 @@ script:
     mvn clean deploy --settings .settings.xml -B -U -Prelease
 
 after_success:
-  - java -jar ~/codacy-coverage-reporter-assembly.jar report -l Java -r target/site/jacoco/jacoco.xm
+  - java -jar ~/codacy-coverage-reporter-assembly.jar report -l Java -r target/site/jacoco/jacoco.xml
 
 before_deploy:
   - export project_version=$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
