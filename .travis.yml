@@ -1,0 +1,39 @@
+language: java
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+    - $HOME/.m2
+
+before_install:
+  - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+  - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+  - wget -q -O ~/codacy-coverage-reporter-assembly.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
+
+install:
+    mvn --settings .settings.xml install -DskipTests=true -B -V
+
+script:
+    mvn clean deploy --settings .settings.xml -B -U -Prelease
+
+after_success:
+  - java -jar ~/codacy-coverage-reporter-assembly.jar report -l Java -r target/site/jacoco/jacoco.xm
+
+before_deploy:
+  - export project_version=$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
+
+deploy:
+  api_key:
+    secure: o3LHHE1MehqhDSH6Yvec9H4LckMTCr+FGgpg3mugDH3l7f0ETwtCt4V/7gWte2XTK/75IehwZ8zi2zHSo6dDNfpz19nIZK4jaXNrHIbCLXDloeFnQe4BHA0LT+rlS+A6NGa9SKU5+VONDDWw6smg2tIr6leg7b+INVJ63hIMrcP9i6I4K96obD46M1Al4geeSf9A7ldYxBSFi5P6oddjEG7AMK+gei23K7B7wOQYe+y7H/RDkaLlpwKkUNXpr7sO4QfPoMPEx7VmkEhAyIQPNNSpyWZxsLs28mqsUivUmJrpZdnTxCVtnJ8mOLd5SUy8KmPk+bF6GVOL9GnOM0+EISoKqZr7QfbKrAS9Vw/1XM9xKKAs0fN0RmqCEbWmO3Ww6WefmcXoA5WZZI1V/1YkOKAav0odYJuFWx57D7Kitcr0ysjQSt0PYibbYiFGFuMxpeoSNAF6I2ULGm3aC4xAHQjQ7dJqsNJLqHwyZD0TxKsgK0wGh3Mz/ahYEar5bULeiEVrwEKK23/Jc2xlB+IBeUpajYr6NwX/tfKNAOmbwz3S5sB3I43dD/0o40vlQSXeyvqcGaOHkqD9lncNO5vR9DxyTgER0OxPxi9laz5rOKmHmBLs/5lcl1pC/Eetf4iQEXfm/rZ/Xk2wNKnNz3z1sI/kzRuy8AyqoVh/PXy2imk=
+  file:
+    - target/spring-boot-graceful-shutdown-${project.version}.jar
+    - target/spring-boot-graceful-shutdown-${project.version}-javadoc.jar
+    - target/spring-boot-graceful-shutdown-${project.version}-sources.jar
+  name: ${project.version}
+  on:
+    repo: timpeeters/spring-boot-graceful-shutdown
+    tags: true
+  provider: releases
+  skip_cleanup: true
