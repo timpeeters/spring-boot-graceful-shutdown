@@ -75,7 +75,9 @@ public abstract class AbstractIntegrationTest {
         assertThat(slowRequest.get().getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
-    protected ListenableFuture<ResponseEntity<HttpStatus>> sendRequestAndWaitForServerToStartProcessing() throws InterruptedException {
+    protected ListenableFuture<ResponseEntity<HttpStatus>> sendRequestAndWaitForServerToStartProcessing()
+            throws InterruptedException {
+
         ListenableFuture<ResponseEntity<HttpStatus>> response =
                 new AsyncRestTemplate().getForEntity("http://localhost:" + port, HttpStatus.class);
 
