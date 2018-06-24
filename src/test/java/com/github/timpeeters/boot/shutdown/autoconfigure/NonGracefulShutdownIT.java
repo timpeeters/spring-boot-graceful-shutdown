@@ -8,9 +8,9 @@ import org.springframework.util.concurrent.ListenableFuture;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
-public class NonGracefulShutdownIntegrationTest extends AbstractIntegrationTest {
+public class NonGracefulShutdownIT extends AbstractIT {
     @Override
     protected void configure(Properties properties) {
     }
@@ -21,6 +21,6 @@ public class NonGracefulShutdownIntegrationTest extends AbstractIntegrationTest 
 
         stopSpringBootApp();
 
-        assertThatThrownBy(response::get).hasCauseInstanceOf(IOException.class);
+        assertThatCode(response::get).hasCauseInstanceOf(IOException.class);
     }
 }

@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-public abstract class AbstractIntegrationTest {
-    protected static final Logger LOG = LoggerFactory.getLogger(NonGracefulShutdownIntegrationTest.class);
+public abstract class AbstractIT {
+    protected static final Logger LOG = LoggerFactory.getLogger(NonGracefulShutdownIT.class);
 
     protected static final Semaphore REQ_RECEIVED = new Semaphore(0);
     protected static final Semaphore REQ_FINISHED = new Semaphore(0);
