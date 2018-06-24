@@ -1,7 +1,7 @@
 package com.github.timpeeters.boot.shutdown.autoconfigure;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -15,39 +15,58 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
 
-import java.io.IOException;
+import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class NonGracefulShutdownTest {
-    private static final Logger LOG = LoggerFactory.getLogger(NonGracefulShutdownTest.class);
+public abstract class AbstractIntegrationTest {
+    protected static final Logger LOG = LoggerFactory.getLogger(NonGracefulShutdownIntegrationTest.class);
 
-    private static final Semaphore REQ_RECEIVED = new Semaphore(0);
-    private static final Semaphore REQ_FINISHED = new Semaphore(0);
+    protected static final Semaphore REQ_RECEIVED = new Semaphore(0);
+    protected static final Semaphore REQ_FINISHED = new Semaphore(0);
 
     private final int port = SocketUtils.findAvailableTcpPort();
 
     private ConfigurableApplicationContext applicationContext;
+    private CompletableFuture<Void> shutdown;
 
     @Before
-    public void startSpringBootApplication() {
-        applicationContext = SpringApplication.run(TestApplication.class, "--server.port=" + port);
-    }
+    public void startSpringBootApplication() throws ExecutionException, InterruptedException {
+        applicationContext = SpringApplication.run(TestApplication.class, getArgs());
 
-    @Test
-    public void inFlightRequestFails() throws ExecutionException, InterruptedException {
         emulateSuccessfulRequest();
-        ListenableFuture<ResponseEntity<HttpStatus>> response = sendRequestAndWaitForServerToStartProcessing();
-
-        stopSpringBootApp();
-
-        assertThatThrownBy(response::get).hasCauseInstanceOf(IOException.class);
     }
 
-    private void emulateSuccessfulRequest() throws ExecutionException, InterruptedException {
+    @After
+    public void verifySpringBootApplicationShutdownComplete() throws InterruptedException, ExecutionException, TimeoutException {
+        shutdown.get(30, TimeUnit.SECONDS);
+    }
+
+    protected String[] getArgs() {
+        return getProperties().entrySet().stream()
+                .map(e -> "--" + e.getKey() + "=" + e.getValue())
+                .toArray(String[]::new);
+
+    }
+
+    protected final Properties getProperties() {
+        Properties props = new Properties();
+        props.setProperty("server.port", Integer.toString(port));
+        props.setProperty("spring.main.banner-mode", "off");
+
+        configure(props);
+
+        return props;
+    }
+
+    protected abstract void configure(Properties properties);
+
+    protected void emulateSuccessfulRequest() throws ExecutionException, InterruptedException {
         ListenableFuture<ResponseEntity<HttpStatus>> slowRequest = sendRequestAndWaitForServerToStartProcessing();
 
         REQ_FINISHED.release();
@@ -55,7 +74,7 @@ public class NonGracefulShutdownTest {
         assertThat(slowRequest.get().getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
-    private ListenableFuture<ResponseEntity<HttpStatus>> sendRequestAndWaitForServerToStartProcessing() throws InterruptedException {
+    protected ListenableFuture<ResponseEntity<HttpStatus>> sendRequestAndWaitForServerToStartProcessing() throws InterruptedException {
         ListenableFuture<ResponseEntity<HttpStatus>> response =
                 new AsyncRestTemplate().getForEntity("http://localhost:" + port, HttpStatus.class);
 
@@ -64,8 +83,8 @@ public class NonGracefulShutdownTest {
         return response;
     }
 
-    private void stopSpringBootApp() {
-        applicationContext.close();
+    protected void stopSpringBootApp() {
+        shutdown = CompletableFuture.runAsync(() -> applicationContext.close());
     }
 
     @SpringBootApplication

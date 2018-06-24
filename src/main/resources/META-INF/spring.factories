@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.github.timpeeters.boot.shutdown.autoconfigure.GracefulShutdownAutoConfiguration
