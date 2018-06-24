@@ -7,14 +7,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.SocketUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.client.ResponseErrorHandler;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -67,22 +71,37 @@ public abstract class AbstractIT {
     protected abstract void configure(Properties properties);
 
     protected void emulateSuccessfulRequest() throws ExecutionException, InterruptedException {
-        ListenableFuture<ResponseEntity<HttpStatus>> slowRequest = sendRequestAndWaitForServerToStartProcessing();
+        ListenableFuture<ResponseEntity<String>> slowRequest = sendRequestAndWaitForServerToStartProcessing();
 
         REQ_FINISHED.release();
 
         assertThat(slowRequest.get().getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
-    protected ListenableFuture<ResponseEntity<HttpStatus>> sendRequestAndWaitForServerToStartProcessing()
+    protected ListenableFuture<ResponseEntity<String>> sendRequestAndWaitForServerToStartProcessing()
             throws InterruptedException {
 
-        ListenableFuture<ResponseEntity<HttpStatus>> response =
-                new AsyncRestTemplate().getForEntity("http://localhost:" + port, HttpStatus.class);
+        ListenableFuture<ResponseEntity<String>> response = sendRequest("/");
 
         REQ_RECEIVED.acquire();
 
         return response;
+    }
+
+    protected ListenableFuture<ResponseEntity<String>> sendRequest(String path) {
+        AsyncRestTemplate restTemplate = new AsyncRestTemplate();
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+                return false;
+            }
+
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+            }
+        });
+
+        return restTemplate.exchange("http://localhost:" + port + path, HttpMethod.GET, null, String.class);
     }
 
     protected void stopSpringBootApp() {

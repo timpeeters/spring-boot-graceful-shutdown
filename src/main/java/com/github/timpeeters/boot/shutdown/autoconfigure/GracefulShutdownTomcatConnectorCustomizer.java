@@ -7,6 +7,7 @@ import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomize
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
     }
 
     @EventListener(ContextClosedEvent.class)
-    @Order(2)
+    @Order(Ordered.HIGHEST_PRECEDENCE + 1)
     public void contextClosed(ContextClosedEvent event) {
         if (connector == null) {
             return;

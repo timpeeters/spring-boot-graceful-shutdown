@@ -17,11 +17,12 @@ public class GracefulShutdownIT extends AbstractIT {
     protected void configure(Properties properties) {
         properties.setProperty("graceful.shutdown.enabled", "true");
         properties.setProperty("graceful.shutdown.timeout", "5");
+        properties.setProperty("graceful.shutdown.wait", "0");
     }
 
     @Test
     public void inFlightRequestSuccessful() throws ExecutionException, InterruptedException {
-        ListenableFuture<ResponseEntity<HttpStatus>> response = sendRequestAndWaitForServerToStartProcessing();
+        ListenableFuture<ResponseEntity<String>> response = sendRequestAndWaitForServerToStartProcessing();
 
         stopSpringBootApp();
 
@@ -32,7 +33,7 @@ public class GracefulShutdownIT extends AbstractIT {
 
     @Test
     public void inFlightRequestFailsAfterTimeout() throws InterruptedException {
-        ListenableFuture<ResponseEntity<HttpStatus>> response = sendRequestAndWaitForServerToStartProcessing();
+        ListenableFuture<ResponseEntity<String>> response = sendRequestAndWaitForServerToStartProcessing();
 
         stopSpringBootApp();
 
