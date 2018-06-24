@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 public abstract class AbstractIntegrationTest {
     protected static final Logger LOG = LoggerFactory.getLogger(NonGracefulShutdownIntegrationTest.class);
@@ -43,8 +44,8 @@ public abstract class AbstractIntegrationTest {
     }
 
     @After
-    public void verifySpringBootApplicationShutdownComplete() throws InterruptedException, ExecutionException, TimeoutException {
-        shutdown.get(30, TimeUnit.SECONDS);
+    public void verifySpringBootApplicationShutdownComplete() {
+        assertThatCode(() -> shutdown.get(30, TimeUnit.SECONDS)).doesNotThrowAnyException();
     }
 
     protected String[] getArgs() {
