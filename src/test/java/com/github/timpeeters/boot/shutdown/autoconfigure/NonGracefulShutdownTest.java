@@ -38,7 +38,7 @@ public class NonGracefulShutdownTest {
     }
 
     @Test
-    public void ok() throws ExecutionException, InterruptedException {
+    public void inFlightRequestFails() throws ExecutionException, InterruptedException {
         emulateSuccessfulRequest();
         ListenableFuture<ResponseEntity<HttpStatus>> response = sendRequestAndWaitForServerToStartProcessing();
 
