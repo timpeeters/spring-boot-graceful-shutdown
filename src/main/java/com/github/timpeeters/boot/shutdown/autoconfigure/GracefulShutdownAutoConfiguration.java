@@ -1,7 +1,6 @@
 package com.github.timpeeters.boot.shutdown.autoconfigure;
 
 import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(GracefulShutdownProperties.class)
 public class GracefulShutdownAutoConfiguration {
     @Bean
-    @ConditionalOnExpression("#{${graceful.shutdown.wait} gt 0}")
     public HealthIndicator gracefulShutdownHealthIndicator(GracefulShutdownProperties props) {
         return new GracefulShutdownHealthIndicator(props);
     }
