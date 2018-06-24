@@ -55,8 +55,6 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
     private void shutdownThreadPoolExecutor(ThreadPoolExecutor executor) {
         executor.shutdown();
         awaitTermination(executor);
-
-        LOG.warn("{} thread(s) still active, force shutdown", executor.getActiveCount());
     }
 
     private void awaitTermination(ThreadPoolExecutor executor) {
@@ -66,6 +64,14 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
             }
 
             LOG.info("{} thread(s) active, {} seconds remaining", executor.getActiveCount(), remaining);
+        }
+
+        logMessageIfThereAreStillActiveThreads(executor);
+    }
+
+    private void logMessageIfThereAreStillActiveThreads(ThreadPoolExecutor executor) {
+        if (executor.getActiveCount() > 0) {
+            LOG.warn("{} thread(s) still active, force shutdown", executor.getActiveCount());
         }
     }
 
