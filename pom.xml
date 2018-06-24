@@ -254,9 +254,9 @@
                         <configuration>
                             <configLocation>${basedir}/config/checkstyle/checkstyle.xml</configLocation>
                             <encoding>UTF-8</encoding>
-                            <consoleOutput>true</consoleOutput>
                             <failsOnError>false</failsOnError>
                             <failOnViolation>false</failOnViolation>
+                            <logViolationsToConsole>true</logViolationsToConsole>
                         </configuration>
                         <goals>
                             <goal>check</goal>
