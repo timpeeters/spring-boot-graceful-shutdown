@@ -28,8 +28,9 @@
 
     <module name="TreeWalker">
         <module name="AbbreviationAsWordInName">
-            <property name="ignoreFinal" value="false"/>
+            <property name="allowedAbbreviations" value="IT"/>
             <property name="allowedAbbreviationLength" value="1"/>
+            <property name="ignoreFinal" value="false"/>
         </module>
 
         <module name="AvoidStarImport"/>
