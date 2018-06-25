@@ -278,6 +278,7 @@
                             <encoding>UTF-8</encoding>
                             <failsOnError>false</failsOnError>
                             <failOnViolation>false</failOnViolation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <logViolationsToConsole>true</logViolationsToConsole>
                         </configuration>
                         <goals>
