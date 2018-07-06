@@ -15,11 +15,13 @@ import java.util.concurrent.TimeUnit;
 public class GracefulShutdownHealthIndicator implements HealthIndicator {
     private static final Logger LOG = LoggerFactory.getLogger(GracefulShutdownHealthIndicator.class);
 
+    private final ApplicationContext applicationContext;
     private final GracefulShutdownProperties props;
 
     private Health health = Health.up().build();
 
-    public GracefulShutdownHealthIndicator(GracefulShutdownProperties props) {
+    public GracefulShutdownHealthIndicator(ApplicationContext ctx, GracefulShutdownProperties props) {
+        this.applicationContext = ctx;
         this.props = props;
     }
 
@@ -31,7 +33,7 @@ public class GracefulShutdownHealthIndicator implements HealthIndicator {
     @EventListener(ContextClosedEvent.class)
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public void contextClosed(ContextClosedEvent event) {
-        if (isRootApplicationContext(event.getApplicationContext())) {
+        if (isEventFromLocalContext(event)) {
             updateHealthToOutOfService();
             waitForKubernetesToSeeOutOfService();
         }
@@ -53,7 +55,7 @@ public class GracefulShutdownHealthIndicator implements HealthIndicator {
         }
     }
 
-    private boolean isRootApplicationContext(ApplicationContext context) {
-        return context.getParent() == null;
+    private boolean isEventFromLocalContext(ContextClosedEvent event) {
+        return event.getApplicationContext().equals(applicationContext);
     }
 }

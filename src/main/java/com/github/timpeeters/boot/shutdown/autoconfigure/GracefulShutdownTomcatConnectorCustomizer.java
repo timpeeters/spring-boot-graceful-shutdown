@@ -20,11 +20,13 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
 
     private static final int CHECK_INTERVAL = 10;
 
+    private final ApplicationContext applicationContext;
     private final GracefulShutdownProperties props;
 
     private Connector connector;
 
-    public GracefulShutdownTomcatConnectorCustomizer(GracefulShutdownProperties props) {
+    public GracefulShutdownTomcatConnectorCustomizer(ApplicationContext ctx, GracefulShutdownProperties props) {
+        this.applicationContext = ctx;
         this.props = props;
     }
 
@@ -40,7 +42,7 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
             return;
         }
 
-        if (isRootApplicationContext(event.getApplicationContext())) {
+        if (isEventFromLocalContext(event)) {
             stopAcceptingNewRequests();
             getThreadPoolExecutor().ifPresent(this::shutdownThreadPoolExecutor);
         }
@@ -95,7 +97,7 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
         return Optional.empty();
     }
 
-    private boolean isRootApplicationContext(ApplicationContext context) {
-        return context.getParent() == null;
+    private boolean isEventFromLocalContext(ContextClosedEvent event) {
+        return event.getApplicationContext().equals(applicationContext);
     }
 }

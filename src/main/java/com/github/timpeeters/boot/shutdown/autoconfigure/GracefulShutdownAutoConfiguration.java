@@ -7,6 +7,7 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomi
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,24 +17,28 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(GracefulShutdownProperties.class)
 public class GracefulShutdownAutoConfiguration {
     @Bean
-    public HealthIndicator gracefulShutdownHealthIndicator(GracefulShutdownProperties props) {
-        return new GracefulShutdownHealthIndicator(props);
+    public HealthIndicator gracefulShutdownHealthIndicator(
+            ApplicationContext ctx, GracefulShutdownProperties props) {
+
+        return new GracefulShutdownHealthIndicator(ctx, props);
     }
 
     @Bean
     public EmbeddedServletContainerCustomizer gracefulShutdownTomcatContainerCustomizer(
-            GracefulShutdownProperties props) {
+            ApplicationContext ctx, GracefulShutdownProperties props) {
 
         return container -> {
             if (container instanceof TomcatEmbeddedServletContainerFactory) {
                 ((TomcatEmbeddedServletContainerFactory) container)
-                        .addConnectorCustomizers(gracefulShutdownTomcatConnectorCustomizer(props));
+                        .addConnectorCustomizers(gracefulShutdownTomcatConnectorCustomizer(ctx, props));
             }
         };
     }
 
     @Bean
-    public TomcatConnectorCustomizer gracefulShutdownTomcatConnectorCustomizer(GracefulShutdownProperties props) {
-        return new GracefulShutdownTomcatConnectorCustomizer(props);
+    public TomcatConnectorCustomizer gracefulShutdownTomcatConnectorCustomizer(
+            ApplicationContext ctx, GracefulShutdownProperties props) {
+
+        return new GracefulShutdownTomcatConnectorCustomizer(ctx, props);
     }
 }
