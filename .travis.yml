@@ -26,11 +26,11 @@ before_deploy:
 
 deploy:
   api_key:
-    secure: o3LHHE1MehqhDSH6Yvec9H4LckMTCr+FGgpg3mugDH3l7f0ETwtCt4V/7gWte2XTK/75IehwZ8zi2zHSo6dDNfpz19nIZK4jaXNrHIbCLXDloeFnQe4BHA0LT+rlS+A6NGa9SKU5+VONDDWw6smg2tIr6leg7b+INVJ63hIMrcP9i6I4K96obD46M1Al4geeSf9A7ldYxBSFi5P6oddjEG7AMK+gei23K7B7wOQYe+y7H/RDkaLlpwKkUNXpr7sO4QfPoMPEx7VmkEhAyIQPNNSpyWZxsLs28mqsUivUmJrpZdnTxCVtnJ8mOLd5SUy8KmPk+bF6GVOL9GnOM0+EISoKqZr7QfbKrAS9Vw/1XM9xKKAs0fN0RmqCEbWmO3Ww6WefmcXoA5WZZI1V/1YkOKAav0odYJuFWx57D7Kitcr0ysjQSt0PYibbYiFGFuMxpeoSNAF6I2ULGm3aC4xAHQjQ7dJqsNJLqHwyZD0TxKsgK0wGh3Mz/ahYEar5bULeiEVrwEKK23/Jc2xlB+IBeUpajYr6NwX/tfKNAOmbwz3S5sB3I43dD/0o40vlQSXeyvqcGaOHkqD9lncNO5vR9DxyTgER0OxPxi9laz5rOKmHmBLs/5lcl1pC/Eetf4iQEXfm/rZ/Xk2wNKnNz3z1sI/kzRuy8AyqoVh/PXy2imk=
+    secure: $GITHUB_OAUTH_TOKEN
   file:
-    - target/spring-boot-graceful-shutdown-${project.version}.jar
-    - target/spring-boot-graceful-shutdown-${project.version}-javadoc.jar
-    - target/spring-boot-graceful-shutdown-${project.version}-sources.jar
+    - target/spring-boot-graceful-shutdown-${project_version}.jar
+    - target/spring-boot-graceful-shutdown-${project_version}-javadoc.jar
+    - target/spring-boot-graceful-shutdown-${project_version}-sources.jar
   name: ${project.version}
   on:
     repo: timpeeters/spring-boot-graceful-shutdown
