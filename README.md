@@ -18,7 +18,7 @@ Flow
 2. A Spring EventListener listens for a ContextClosedEvent and is invoked once the shutdown is started.
 3. The EventListener updates a Spring Boot HealthIndicator and puts it "out of service".
 5. The context shutdown is delayed using a Thread.sleep to allow the load balancer to see the updated HealthIndicator status and stop forwarding requests to this instance.
-7. When the Thread.sleep is finished, the README.mdTomcat container is gracefully shutdown
+7. When the Thread.sleep is finished, the Tomcat container is gracefully shutdown. 
 First by pausing the connector, no longer accepting new request.
 Next, by allowing the Tomcat thread pool a configurable amount of time to finish the active threads.
 8. Finally, the Spring context is closed.
