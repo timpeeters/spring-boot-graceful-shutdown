@@ -31,7 +31,7 @@ deploy:
     - target/spring-boot-graceful-shutdown-${project_version}.jar
     - target/spring-boot-graceful-shutdown-${project_version}-javadoc.jar
     - target/spring-boot-graceful-shutdown-${project_version}-sources.jar
-  name: ${project.version}
+  name: ${project_version}
   on:
     repo: timpeeters/spring-boot-graceful-shutdown
     tags: true
