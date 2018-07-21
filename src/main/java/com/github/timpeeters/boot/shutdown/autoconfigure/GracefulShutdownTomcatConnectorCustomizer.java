@@ -10,7 +10,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
-import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -37,14 +36,14 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
 
     @EventListener(ContextClosedEvent.class)
     @Order(Ordered.HIGHEST_PRECEDENCE + 1)
-    public void contextClosed(ContextClosedEvent event) {
+    public void contextClosed(ContextClosedEvent event) throws InterruptedException {
         if (connector == null) {
             return;
         }
 
         if (isEventFromLocalContext(event)) {
             stopAcceptingNewRequests();
-            getThreadPoolExecutor().ifPresent(this::shutdownThreadPoolExecutor);
+            shutdownThreadPoolExecutor();
         }
     }
 
@@ -54,14 +53,18 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
         LOG.info("Paused {} to stop accepting new requests", connector);
     }
 
-    private void shutdownThreadPoolExecutor(ThreadPoolExecutor executor) {
-        executor.shutdown();
-        awaitTermination(executor);
+    private void shutdownThreadPoolExecutor() throws InterruptedException {
+        ThreadPoolExecutor executor = getThreadPoolExecutor();
+
+        if (executor != null) {
+            executor.shutdown();
+            awaitTermination(executor);
+        }
     }
 
-    private void awaitTermination(ThreadPoolExecutor executor) {
+    private void awaitTermination(ThreadPoolExecutor executor) throws InterruptedException {
         for (int remaining = props.getTimeout(); remaining > 0; remaining -= CHECK_INTERVAL) {
-            if (tryAwaitTermination(executor)) {
+            if (executor.awaitTermination(CHECK_INTERVAL, TimeUnit.SECONDS)) {
                 return;
             }
 
@@ -77,24 +80,14 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
         }
     }
 
-    private boolean tryAwaitTermination(ThreadPoolExecutor executor) {
-        try {
-            return executor.awaitTermination(CHECK_INTERVAL, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            LOG.warn("Interrupted while waiting for termination");
-        }
-
-        return false;
-    }
-
-    private Optional<ThreadPoolExecutor> getThreadPoolExecutor() {
+    private ThreadPoolExecutor getThreadPoolExecutor() {
         Executor executor = connector.getProtocolHandler().getExecutor();
 
         if (executor instanceof ThreadPoolExecutor) {
-            return Optional.of((ThreadPoolExecutor) executor);
+            return (ThreadPoolExecutor) executor;
         }
 
-        return Optional.empty();
+        return null;
     }
 
     private boolean isEventFromLocalContext(ContextClosedEvent event) {
