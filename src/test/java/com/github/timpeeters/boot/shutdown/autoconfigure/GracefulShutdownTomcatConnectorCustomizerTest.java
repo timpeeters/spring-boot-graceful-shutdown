@@ -32,15 +32,21 @@ public class GracefulShutdownTomcatConnectorCustomizerTest {
 
     @Test
     public void differentThreadPoolImplementation() {
+        Connector mockConnector = configureConnectorToReturnDifferentThreadPoolImplementation();
+
+        customizer.customize(mockConnector);
+
+        assertThatCode(() -> customizer.contextClosed(new ContextClosedEvent(applicationContext)))
+                .doesNotThrowAnyException();
+    }
+
+    private Connector configureConnectorToReturnDifferentThreadPoolImplementation() {
         Connector mockConnector = mock(Connector.class);
         ProtocolHandler mockProtocolHandler = mock(ProtocolHandler.class);
 
         when(mockConnector.getProtocolHandler()).thenReturn(mockProtocolHandler);
         when(mockProtocolHandler.getExecutor()).thenReturn(new SyncTaskExecutor());
 
-        customizer.customize(mockConnector);
-
-        assertThatCode(() -> customizer.contextClosed(new ContextClosedEvent(applicationContext)))
-                .doesNotThrowAnyException();
+        return mockConnector;
     }
 }
