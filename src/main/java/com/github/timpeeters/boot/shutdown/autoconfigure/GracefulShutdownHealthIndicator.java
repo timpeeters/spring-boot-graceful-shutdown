@@ -32,7 +32,7 @@ public class GracefulShutdownHealthIndicator implements HealthIndicator {
 
     @EventListener(ContextClosedEvent.class)
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public void contextClosed(ContextClosedEvent event) {
+    public void contextClosed(ContextClosedEvent event) throws InterruptedException {
         if (isEventFromLocalContext(event)) {
             updateHealthToOutOfService();
             waitForKubernetesToSeeOutOfService();
@@ -45,14 +45,10 @@ public class GracefulShutdownHealthIndicator implements HealthIndicator {
         LOG.info("Health status set to out of service");
     }
 
-    private void waitForKubernetesToSeeOutOfService() {
+    private void waitForKubernetesToSeeOutOfService() throws InterruptedException {
         LOG.info("Wait {} seconds for Kubernetes to see the out of service status", props.getWait());
 
-        try {
-            TimeUnit.SECONDS.sleep(props.getWait());
-        } catch (InterruptedException e) {
-            LOG.warn("Interrupted while waiting for Kubernetes to see the out of service status");
-        }
+        TimeUnit.SECONDS.sleep(props.getWait());
     }
 
     private boolean isEventFromLocalContext(ContextClosedEvent event) {
