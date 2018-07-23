@@ -54,9 +54,9 @@ public class GracefulShutdownProperties implements InitializingBean {
     @Override
     public String toString() {
         return new StringJoiner(", ", "GracefulShutdownProperties[", "]")
-                .add("enabled=" + enabled)
-                .add("timeout=" + timeout)
-                .add("wait=" + wait)
+                .add("enabled=" + isEnabled())
+                .add("timeout=" + getTimeout())
+                .add("wait=" + getWait())
                 .toString();
     }
 
