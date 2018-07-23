@@ -39,6 +39,13 @@
 
         <module name="CovariantEquals"/>
 
+        <module name="CustomImportOrder">
+            <property name="customImportOrderRules" value="THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>
+            <property name="standardPackageRegExp" value="^java(x)?\."/>
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <property name="separateLineBetweenGroups" value="true"/>
+        </module>
+
         <module name="DeclarationOrder"/>
 
         <module name="DefaultComesLast"/>
