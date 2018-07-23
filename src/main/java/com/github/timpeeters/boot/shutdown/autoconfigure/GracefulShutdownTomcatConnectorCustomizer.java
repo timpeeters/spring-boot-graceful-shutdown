@@ -63,7 +63,7 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
     }
 
     private void awaitTermination(ThreadPoolExecutor executor) throws InterruptedException {
-        for (int remaining = props.getTimeout(); remaining > 0; remaining -= CHECK_INTERVAL) {
+        for (long remaining = props.getTimeout().getSeconds(); remaining > 0; remaining -= CHECK_INTERVAL) {
             if (executor.awaitTermination(CHECK_INTERVAL, TimeUnit.SECONDS)) {
                 return;
             }

@@ -10,8 +10,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
-import java.util.concurrent.TimeUnit;
-
 public class GracefulShutdownHealthIndicator implements HealthIndicator {
     private static final Logger LOG = LoggerFactory.getLogger(GracefulShutdownHealthIndicator.class);
 
@@ -46,9 +44,9 @@ public class GracefulShutdownHealthIndicator implements HealthIndicator {
     }
 
     private void waitForKubernetesToSeeOutOfService() throws InterruptedException {
-        LOG.info("Wait {} seconds for Kubernetes to see the out of service status", props.getWait());
+        LOG.info("Wait {} seconds for Kubernetes to see the out of service status", props.getWait().getSeconds());
 
-        TimeUnit.SECONDS.sleep(props.getWait());
+        Thread.sleep(props.getWait().toMillis());
     }
 
     private boolean isEventFromLocalContext(ContextClosedEvent event) {

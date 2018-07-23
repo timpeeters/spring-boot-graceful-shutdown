@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
 import java.util.StringJoiner;
 
 @ConfigurationProperties("graceful.shutdown")
@@ -19,13 +20,13 @@ public class GracefulShutdownProperties implements InitializingBean {
     /**
      * The number of seconds to wait for active threads to finish before shutting down the embedded web container.
      */
-    private int timeout = 60;
+    private Duration timeout = Duration.ofSeconds(60);
 
     /**
      * The number of seconds to wait before starting the graceful shutdown. During this time, the health checker returns
      * OUT_OF_SERVICE.
      */
-    private int wait = 30;
+    private Duration wait = Duration.ofSeconds(30);
 
     public boolean isEnabled() {
         return enabled;
@@ -35,19 +36,19 @@ public class GracefulShutdownProperties implements InitializingBean {
         this.enabled = enabled;
     }
 
-    public int getTimeout() {
+    public Duration getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(int timeout) {
+    public void setTimeout(Duration timeout) {
         this.timeout = timeout;
     }
 
-    public int getWait() {
+    public Duration getWait() {
         return wait;
     }
 
-    public void setWait(int wait) {
+    public void setWait(Duration wait) {
         this.wait = wait;
     }
 

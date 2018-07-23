@@ -12,8 +12,8 @@ public class GracefulShutdownWithWaitIT extends AbstractIT {
     @Override
     protected void configure(Properties properties) {
         properties.setProperty("graceful.shutdown.enabled", "true");
-        properties.setProperty("graceful.shutdown.timeout", "0");
-        properties.setProperty("graceful.shutdown.wait", "5");
+        properties.setProperty("graceful.shutdown.timeout", "0s");
+        properties.setProperty("graceful.shutdown.wait", "5s");
     }
 
     @Test
