@@ -70,6 +70,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
@@ -323,6 +329,9 @@
                                     org.springframework.boot:spring-boot-starter-*
                                 </ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
+                            <usedDependencies>
+                                <usedDependency>com.fasterxml.jackson.core:jackson-annotations</usedDependency>
+                            </usedDependencies>
                         </configuration>
                     </execution>
                 </executions>
