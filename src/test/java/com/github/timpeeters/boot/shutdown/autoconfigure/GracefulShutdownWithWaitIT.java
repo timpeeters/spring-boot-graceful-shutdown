@@ -22,6 +22,6 @@ public class GracefulShutdownWithWaitIT extends AbstractIT {
 
         Thread.sleep(2000);
 
-        assertThat(sendRequest("/health").get().getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
+        assertThat(sendRequest("/actuator/health").get().getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
     }
 }
