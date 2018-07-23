@@ -1,5 +1,7 @@
 package com.github.timpeeters.boot.shutdown.autoconfigure;
 
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -7,16 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.SocketUtils;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.AsyncRestTemplate;
-import org.springframework.web.client.ResponseErrorHandler;
 
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
@@ -26,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.asynchttpclient.Dsl.asyncHttpClient;
+import static org.asynchttpclient.Dsl.get;
 
 public abstract class AbstractIT {
     protected static final Logger LOG = LoggerFactory.getLogger(NonGracefulShutdownIT.class);
@@ -70,37 +69,25 @@ public abstract class AbstractIT {
     protected abstract void configure(Properties properties);
 
     protected void emulateSuccessfulRequest() throws ExecutionException, InterruptedException {
-        ListenableFuture<ResponseEntity<String>> slowRequest = sendRequestAndWaitForServerToStartProcessing();
+        ListenableFuture<Response> slowRequest = sendRequestAndWaitForServerToStartProcessing();
 
         REQ_FINISHED.release();
 
-        assertThat(slowRequest.get().getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(slowRequest.get().getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    protected ListenableFuture<ResponseEntity<String>> sendRequestAndWaitForServerToStartProcessing()
+    protected ListenableFuture<Response> sendRequestAndWaitForServerToStartProcessing()
             throws InterruptedException {
 
-        ListenableFuture<ResponseEntity<String>> response = sendRequest("/");
+        ListenableFuture<Response> response = sendRequest("/");
 
         REQ_RECEIVED.acquire();
 
         return response;
     }
 
-    protected ListenableFuture<ResponseEntity<String>> sendRequest(String path) {
-        AsyncRestTemplate restTemplate = new AsyncRestTemplate();
-        restTemplate.setErrorHandler(new ResponseErrorHandler() {
-            @Override
-            public boolean hasError(ClientHttpResponse response) {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) {
-            }
-        });
-
-        return restTemplate.exchange("http://localhost:" + port + path, HttpMethod.GET, null, String.class);
+    protected ListenableFuture<Response> sendRequest(String path) {
+        return asyncHttpClient().executeRequest(get("http://localhost:" + port + path));
     }
 
     protected void stopSpringBootApp() {

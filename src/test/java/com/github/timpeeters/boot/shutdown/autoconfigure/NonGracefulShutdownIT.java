@@ -1,8 +1,8 @@
 package com.github.timpeeters.boot.shutdown.autoconfigure;
 
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import org.junit.Test;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -16,7 +16,7 @@ public class NonGracefulShutdownIT extends AbstractIT {
 
     @Test
     public void inFlightRequestFails() throws InterruptedException {
-        ListenableFuture<ResponseEntity<String>> response = sendRequestAndWaitForServerToStartProcessing();
+        ListenableFuture<Response> response = sendRequestAndWaitForServerToStartProcessing();
 
         stopSpringBootApp();
 

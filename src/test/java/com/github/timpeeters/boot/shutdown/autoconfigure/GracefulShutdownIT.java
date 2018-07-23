@@ -1,9 +1,9 @@
 package com.github.timpeeters.boot.shutdown.autoconfigure;
 
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -22,18 +22,18 @@ public class GracefulShutdownIT extends AbstractIT {
 
     @Test
     public void inFlightRequestSuccessful() throws ExecutionException, InterruptedException {
-        ListenableFuture<ResponseEntity<String>> response = sendRequestAndWaitForServerToStartProcessing();
+        ListenableFuture<Response> response = sendRequestAndWaitForServerToStartProcessing();
 
         stopSpringBootApp();
 
         REQ_FINISHED.release();
 
-        assertThat(response.get().getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.get().getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     public void inFlightRequestFailsAfterTimeout() throws InterruptedException {
-        ListenableFuture<ResponseEntity<String>> response = sendRequestAndWaitForServerToStartProcessing();
+        ListenableFuture<Response> response = sendRequestAndWaitForServerToStartProcessing();
 
         stopSpringBootApp();
 
