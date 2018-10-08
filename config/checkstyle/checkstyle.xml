@@ -35,6 +35,8 @@
 
         <module name="AvoidStarImport"/>
 
+        <module name="ClassFanOutComplexity"/>
+
         <module name="ConstantName"/>
 
         <module name="CovariantEquals"/>
