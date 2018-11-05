@@ -11,6 +11,19 @@ Spring Boot Graceful Shutdown
 This project adds graceful shutdown behavior to Spring Boot.
 
 
+Versions
+--------
+
+Multiple branches are maintained to support multiple Spring Boot versions.
+The following tables show the relation between the Spring Boot version and the Spring Boot Actuator Server Config version.
+
+| Spring Boot | Spring Boot Actuator Server Config | Branch |
+| :---        | :---                               | :---   |
+| 1.5.x       | 1.0.x                              | 1.0.x  |
+| 2.0.x       | 2.0.x                              | 2.0.x  |
+| 2.1.x       | 2.1.x                              | master |
+
+
 Flow
 ----
 
