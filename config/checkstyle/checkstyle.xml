@@ -17,6 +17,8 @@
         <property name="eachLine" value="true"/>
     </module>
 
+    <module name="OrderedProperties"/>
+
     <module name="RegexpSingleline">
         <property name="format" value="\s+$"/>
         <property name="message" value="Line has trailing spaces."/>
@@ -176,6 +178,10 @@
         <module name="SuppressWarningsHolder"/>
 
         <module name="UnnecessaryParentheses"/>
+
+        <module name="UnnecessarySemicolonInEnumeration"/>
+
+        <module name="UnnecessarySemicolonInTryWithResources"/>
 
         <module name="UnusedImports"/>
 
