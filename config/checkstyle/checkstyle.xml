@@ -17,6 +17,11 @@
         <property name="eachLine" value="true"/>
     </module>
 
+    <module name="LineLength">
+        <property name="ignorePattern" value="^package.*|^import.*"/>
+        <property name="max" value="120"/>
+    </module>
+
     <module name="OrderedProperties"/>
 
     <module name="RegexpSingleline">
@@ -88,11 +93,6 @@
         <module name="InnerAssignment"/>
 
         <module name="LeftCurly"/>
-
-        <module name="LineLength">
-            <property name="ignorePattern" value="^package.*|^import.*"/>
-            <property name="max" value="120"/>
-        </module>
 
         <!-- Method length check does not take into account single executable statements spread over multiple lines
         like for example a builder pattern or a stream operation. Instead we prefer to limit the amount of code in one
