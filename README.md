@@ -1,7 +1,7 @@
 Spring Boot Graceful Shutdown
 =============================
 
-[![Build Status](https://api.travis-ci.org/timpeeters/spring-boot-graceful-shutdown.svg?branch=master)](https://www.travis-ci.org/timpeeters/spring-boot-graceful-shutdown)
+[![Build Status](https://api.travis-ci.com/timpeeters/spring-boot-graceful-shutdown.svg?branch=master)](https://www.travis-ci.com/timpeeters/spring-boot-graceful-shutdown)
 [![Known Vulnerabilities](https://snyk.io/test/github/timpeeters/spring-boot-graceful-shutdown/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/timpeeters/spring-boot-graceful-shutdown?targetFile=pom.xml)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=timpeeters/spring-boot-graceful-shutdown)](https://dependabot.com)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.timpeeters/spring-boot-graceful-shutdown/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.timpeeters/spring-boot-graceful-shutdown)
