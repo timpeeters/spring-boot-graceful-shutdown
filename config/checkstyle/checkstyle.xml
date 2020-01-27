@@ -40,6 +40,8 @@
             <property name="ignoreFinal" value="false"/>
         </module>
 
+        <module name="AvoidNoArgumentSuperConstructorCall"/>
+
         <module name="AvoidStarImport"/>
 
         <module name="ClassFanOutComplexity"/>
@@ -139,6 +141,8 @@
         </module>
 
         <module name="NoClone"/>
+
+        <module name="NoEnumTrailingComma"/>
 
         <module name="NoFinalizer"/>
 
