@@ -64,11 +64,11 @@ public class GracefulShutdownTomcatConnectorCustomizer implements TomcatConnecto
 
     private void awaitTermination(ThreadPoolExecutor executor) throws InterruptedException {
         for (long remaining = props.getTimeout().getSeconds(); remaining > 0; remaining -= CHECK_INTERVAL) {
+            LOG.info("{} thread(s) active, {} seconds remaining", executor.getActiveCount(), remaining);
+
             if (executor.awaitTermination(CHECK_INTERVAL, TimeUnit.SECONDS)) {
                 return;
             }
-
-            LOG.info("{} thread(s) active, {} seconds remaining", executor.getActiveCount(), remaining);
         }
 
         logMessageIfThereAreStillActiveThreads(executor);
