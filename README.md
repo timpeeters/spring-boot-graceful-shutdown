@@ -3,8 +3,6 @@ Spring Boot Graceful Shutdown
 
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=timpeeters/spring-boot-graceful-shutdown)](https://dependabot.com)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.timpeeters/spring-boot-graceful-shutdown/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.timpeeters/spring-boot-graceful-shutdown)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c7e77bfc98a64687aa6a87b1619fb06a)](https://www.codacy.com/app/timpeeters/spring-boot-graceful-shutdown?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=timpeeters/spring-boot-graceful-shutdown&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/c7e77bfc98a64687aa6a87b1619fb06a)](https://www.codacy.com/app/timpeeters/spring-boot-graceful-shutdown?utm_source=github.com&utm_medium=referral&utm_content=timpeeters/spring-boot-graceful-shutdown&utm_campaign=Badge_Coverage)
 
 This project adds graceful shutdown behavior to Spring Boot.
 
