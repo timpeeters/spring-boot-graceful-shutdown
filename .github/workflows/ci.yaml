@@ -35,4 +35,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --batch-mode -Psonar
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --batch-mode -Psonar -Dsonar.login=$SONAR_TOKEN
