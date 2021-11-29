@@ -1,11 +1,12 @@
 Spring Boot Graceful Shutdown
 =============================
 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=timpeeters/spring-boot-graceful-shutdown)](https://dependabot.com)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.timpeeters/spring-boot-graceful-shutdown/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.timpeeters/spring-boot-graceful-shutdown)
 
-This project adds graceful shutdown behavior to Spring Boot.
+This project adds graceful shutdown behavior to Spring Boot. As of Spring Boot 2.3+, use the native support inside Spring Boot to accomplish graceful shutdown: https://docs.spring.io/spring-boot/docs/current/reference/html/web.html#web.graceful-shutdown
 
+When deployed on Kubernetes, add a preStop command:
+https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.cloud.kubernetes.container-lifecycle
 
 Versions
 --------
